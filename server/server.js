@@ -4,7 +4,10 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const morgan = require('morgan');
 
+const connectDB = require('./config/db.config');
 const userRoutes = require('./routes/users.routes');
+
+connectDB();
 
 const app = express();
 const PORT = process.env.PORT || 8000;
