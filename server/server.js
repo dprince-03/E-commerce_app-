@@ -4,8 +4,8 @@ const cookieParser = require('cookie-parser');
 const cors = require('cors');
 const morgan = require('morgan');
 
-const connectDB = require('./config/db.config');
-const userRoutes = require('./routes/users.routes');
+const connectDB = require('./src/config/db.config');
+const userRoutes = require('./src/routes/users.routes');
 
 connectDB();
 

@@ -38,7 +38,7 @@ const userSchema = new mongoose.Schema({
         required: [true, "Phone number is required"],
         unique: [true, "Phone number must be unique"],
         trim: true,
-        match: [/^\d{14}$/, "Please enter a valid phone number"],
+        // match: [/^\d{14}$/, "Please enter a valid phone number"],
     },
 	password: {
 		type: String,
