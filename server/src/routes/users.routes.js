@@ -26,27 +26,16 @@ const upload = multer({
 }
 });
 
-// // Apply authentication to all routes after this middleware
-// userRoutes.use(protect);
+// Apply authentication to all routes after this middleware
+// router.use(protect);
 
-//home page route
-userRoutes.get('/', homePage);
-
-// user registration page
-userRoutes.get('/sign-up', signUpPage);
-userRoutes.post('/sign-up', signUpUser);
-
-// user login page
-userRoutes.get('/log-in', logInPage);
-userRoutes.post('/log-in', logInUser);
-
+// Current user routes
+router.get('/me', userController.getMe);
+router.patch('/me', validateUserUpdate, userController.updateMe);
+router.delete('/me', userController.deleteMe);
 
 // Admin only routes
-router.use(restrictTo('admin'));
-
-// Admin dashboard route
-userRoutes.get('/admin-dashboard', adminDashboard);
-userRoutes.post('/admin-dashboard', adminDashboardPost);
+// router.use(restrictTo('admin'));
 
 // User management routes (Admin only)
 router.get('/stats', userController.getUserStats);
@@ -54,6 +43,5 @@ router.get('/', userController.getAllUsers);
 router.get('/:id', userController.getUser);
 router.patch('/:id', validateUserUpdate, userController.updateUser);
 router.delete('/:id', userController.deleteUser);
-
 
 module.exports = userRoutes;
