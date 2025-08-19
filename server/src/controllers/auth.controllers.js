@@ -3,7 +3,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const User = require("../models/user.models");
-const authService = require('../services/auth.service');
+// const authService = require('../services/auth.service');
 
 
 // Generate JWT Token
@@ -42,6 +42,7 @@ const createSendToken = (user, statusCode, req, res, message = 'Success') => {
     }
   });
 };
+
 
 // @desc    Register new user
 // @access  Public
@@ -107,20 +108,16 @@ const signUpUser = async(req, res) => {
         await User.create(newUser);
         console.log(`New User Created: ${newUser}`);
 
-        // Generate email verification token
-        const verifyToken = await authService.generateEmailVerificationToken(newUser);
+        // // Generate email verification token
+        // const verifyToken = await authService.generateEmailVerificationToken(newUser);
 
-        // Send verification email (implement this in your email service)
-        try {
-          await authService.sendVerificationEmail(newUser, verifyToken);
-        } catch (err) {
-            console.error('Email sending failed:', err);
-            // Don't fail registration if email fails
-        }
-
-        createSendToken(newUser, 201, req, res, 'User registered successfully. Please check your email for verification.');
-
-
+        // // Send verification email (implement this in your email service)
+        // try {
+        //   await authService.sendVerificationEmail(newUser, verifyToken);
+        // } catch (err) {
+        //     console.error('Email sending failed:', err);
+        //     // Don't fail registration if email fails
+        // }
 
         // Send a response back to the client
         if (newUser) {
@@ -148,6 +145,8 @@ const signUpUser = async(req, res) => {
             return;
         }
         
+        // createSendToken(newUser, 201, req, res, 'User registered successfully. Please check your email for verification.');
+
     } catch (error) {
         console.error("Error signing up user:", error);
         // res.status(500).send("Internal Server Error");
@@ -245,18 +244,14 @@ const logInUser = async (req, res) => {
             runValidators: true,
         }
     );
-
-    // If everything ok, send token to client
-    createSendToken(userlogInDetails, 200, req, res, "Login successful");
-
-
+    
 	res.send("User logged in successfully");
 	res.status(200).json({
-		success: true,
+        success: true,
 		message: "User logged in successfully",
 		data: {
-			user: {
-				id: userlogInDetails._id,
+            user: {
+                id: userlogInDetails._id,
 				firstName: userlogInDetails.firstName,
 				lastName: userlogInDetails.lastName,
 				userName: userlogInDetails.userName,
@@ -265,11 +260,35 @@ const logInUser = async (req, res) => {
 			},
 		},
 	});
+
+    // // If everything ok, send token to client
+    // createSendToken(userlogInDetails, 200, req, res, "Login successful");
 };
+
+// @desc    Logout user
+// @route   POST
+// @access  Private
+const logout = (req, res) => {
+    // Clear the JWT cookie
+    res.cookie('jwt', 'loggedout', {
+        expires: new Date(Date,now +10 * 1000), // 10 seconds
+        httpOnly: true,
+        secure: {
+            [req.secure || req.headers['x-forwarded-proto'] === 'https']: true,
+        },
+        sameSite: 'strict',
+    });
+
+    res.status(200).json({
+        status: 'success',
+        message: 'User logged out successfully',
+    });
+}
 
 module.exports = {
     signUpPage,
     signUpUser,
     logInPage,
     logInUser,
+    logout,
 };

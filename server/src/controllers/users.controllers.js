@@ -13,10 +13,21 @@ const adminDashboard = (req, res) => {
     res.send('Admin Dashboard');
     res.status(200);
 };
-const adminDashboardPost = (req, res) => {
-    // Logic for handling admin dashboard post requests
-    res.send('Admin Dashboard Post Request Handled');
-    res.status(200);
+const getAllUsers = (req, res) => {
+    user.find({}, (err, users) => {
+        if (err) {
+            return res.status(500).json({
+                success: false,
+                message: "Error fetching users",
+                error: err.message,
+            });
+        }
+        res.status(200).json({
+            success: true,
+            message: "Users fetched successfully",
+            data: users,
+        });
+    });
 };
 
 
@@ -24,5 +35,7 @@ const adminDashboardPost = (req, res) => {
 module.exports = {
     homePage,
     adminDashboard,
-    adminDashboardPost,
+    adminDashboardPost: {
+        getAllUsers,
+    }
 };
